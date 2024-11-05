@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Vida en Orden</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-  <header>
-    <h1>Mi Vida En Orden</h1>
-    <nav>
-      <ul>
-        <li><a href="#todo-list">Lista de Tareas</a></li>
-        <li><a href="#calendar">Calendario</a></li>
-        <li><a href="#habit-tracker">Rastreador de Habitos</a></li>
-        <li><a href="#finance">Gestión de Finanzas</a></li>
-        <li><a href="#notes">Notas</a></li>  
-      </ul>
-    </nav>
-    <main id="app">
-      <section id="todo-list">
-        <h2>Lista de Tareas</h2>
-        <form id="task-form">
-          <input type="text" id="task-input" placeholder="Escribe una nueva tarea" required>
-          <button type="submit">Añadir Tarea</button>
-        </form>
-        <ul id="tasks"></ul>
-      </section>
-    </main>
-  </header>
-  <script src="js/app.js"></script>
+    <div class="container my-5">
+        <!-- Encabezado -->
+        <header class="text-center mb-4">
+            <h1 class="display-4">Mi Vida en Orden</h1>
+            <p class="lead">Organiza tus tareas diarias de forma sencilla</p>
+        </header>
+
+        <!-- Navegación -->
+        <nav class="mb-4">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item"><a href="#todo-list" class="nav-link active">Lista de Tareas</a></li>
+                <li class="nav-item"><a href="#calendar" class="nav-link">Calendario</a></li>
+                <li class="nav-item"><a href="#habit-tracker" class="nav-link">Rastreador de Hábitos</a></li>
+                <li class="nav-item"><a href="#finance" class="nav-link">Gestión de Finanzas</a></li>
+                <li class="nav-item"><a href="#notes" class="nav-link">Notas</a></li>
+            </ul>
+        </nav>
+
+        <!-- Lista de Tareas -->
+        <section id="todo-list">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h2 class="h4">Lista de Tareas</h2>
+                </div>
+                <div class="card-body">
+                    <form id="task-form" class="form-inline">
+                        <input type="text" id="task-input" class="form-control mr-2 flex-grow-1" placeholder="Escribe una nueva tarea" required>
+                        <button type="submit" class="btn btn-primary">Añadir Tarea</button>
+                    </form>
+                </div>
+                <ul id="tasks" class="list-group list-group-flush">
+                    <!-- Aquí se añadirán las tareas dinámicamente -->
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
