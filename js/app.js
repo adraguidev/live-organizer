@@ -11,6 +11,7 @@ taskForm.addEventListener("submit", function(event){
 
     if (taskText !== "") {
         addTask(taskText)
+        saveTask(taskText)
         taskInput.value = ""
     }
 })
@@ -23,13 +24,47 @@ function addTask(taskText) {
     deleteButton.textContent = "Eliminar"
     deleteButton.addEventListener("click", function(){
         taskContainer.removeChild(taskItem)
+        deleteTask(taskText)
     })
 
+    const editButton = document.createElement("button")
+    editButton.textContent = "Editar"
+    editButton.addEventListener("click" , function(){
+        const newText = prompt("Edita tu tarea:", taskText)
+        if (newText !== null && newText !== ""){
+            taskItem.firstChild.textContent = newText
+            updateTask(taskText, newText)
+        }
+    })
+
+    taskItem.appendChild(editButton)
     taskItem.appendChild(deleteButton)
     taskContainer.appendChild(taskItem)
 
 }
 
-function saveTask() {
-    let tasks = JSON.parse
+function saveTask(taskText) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
+    tasks.push(taskText)
+    localStorage.setItem("tasks",JSON.stringify(tasks))
+}
+
+function loadTasks() {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
+    tasks.forEach(taskText => addTask(taskText))
+}
+
+function deleteTask(taskText) {
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
+    tasks = tasks.filter(task => task !== taskText)
+    localStorage.setItem("tasks",JSON.stringify(tasks))
+}
+
+function updateTask(oldText, newText){
+    let tasks = JSON.parse(localStorage.getItem("tasks"))
+    const taskIndex = tasks.indexOf(oldText)
+    if (taskIndex !== -1) {
+        tasks[taskIndex] = newText
+        localStorage.setItem("tasks", JSON.stringify(tasks))
+    }
 }
