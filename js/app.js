@@ -1,70 +1,82 @@
-const taskForm = document.getElementById("task-form")
-const taskInput = document.getElementById("task-input")
-const taskContainer = document.getElementById("tasks")
+const taskForm = document.getElementById("task-form");
+const taskInput = document.getElementById("task-input");
+const taskContainer = document.getElementById("tasks");
 
-document.addEventListener("DOMContentLoaded",loadTasks)
+// Cargar las tareas almacenadas al iniciar la página
+document.addEventListener("DOMContentLoaded", loadStoredTasks);
 
+taskForm.addEventListener("submit", handleTaskSubmit);
 
-taskForm.addEventListener("submit", function(event){
+// Maneja el envío del formulario para agregar una nueva tarea
+function handleTaskSubmit(event) {
     event.preventDefault();
-    const taskText = taskInput.value
+    const taskText = taskInput.value.trim();
 
     if (taskText !== "") {
-        addTask(taskText)
-        saveTask(taskText)
-        taskInput.value = ""
+        addTaskToDom(taskText);
+        saveTaskToLocalStorage(taskText);
+        taskInput.value = ""; // Limpia el campo de entrada
     }
-})
-
-function addTask(taskText) {
-    const taskItem = document.createElement("li")
-    taskItem.textContent = taskText
-
-    const deleteButton = document.createElement("button")
-    deleteButton.textContent = "Eliminar"
-    deleteButton.addEventListener("click", function(){
-        taskContainer.removeChild(taskItem)
-        deleteTask(taskText)
-    })
-
-    const editButton = document.createElement("button")
-    editButton.textContent = "Editar"
-    editButton.addEventListener("click" , function(){
-        const newText = prompt("Edita tu tarea:", taskText)
-        if (newText !== null && newText !== ""){
-            taskItem.firstChild.textContent = newText
-            updateTask(taskText, newText)
-        }
-    })
-
-    taskItem.appendChild(editButton)
-    taskItem.appendChild(deleteButton)
-    taskContainer.appendChild(taskItem)
-
 }
 
-function saveTask(taskText) {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
-    tasks.push(taskText)
-    localStorage.setItem("tasks",JSON.stringify(tasks))
+function addTaskToDom(taskText) {
+    const taskItem = document.createElement("li");
+    taskItem.textContent = taskText;
+
+    const editButton = createButton("Editar", () => editTask(taskItem, taskText));
+    const deleteButton = createButton("Eliminar", () => removeTask(taskItem, taskText));
+
+    taskItem.appendChild(editButton);
+    taskItem.appendChild(deleteButton);
+    taskContainer.appendChild(taskItem);
 }
 
-function loadTasks() {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
-    tasks.forEach(taskText => addTask(taskText))
+function createButton(text, onClick) {
+    const button = document.createElement("button");
+    button.textContent = text;
+    button.addEventListener("click", onClick);
+    return button;
 }
 
-function deleteTask(taskText) {
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || []
-    tasks = tasks.filter(task => task !== taskText)
-    localStorage.setItem("tasks",JSON.stringify(tasks))
+function editTask(taskItem, oldText) {
+    const newText = prompt("Edita tu tarea:", oldText);
+    if (newText && newText.trim()) {
+        taskItem.firstChild.textContent = newText; // Corrige la referencia al texto de la tarea
+        updateTaskInLocalStorage(oldText, newText);
+    }
 }
 
-function updateTask(oldText, newText){
-    let tasks = JSON.parse(localStorage.getItem("tasks"))
-    const taskIndex = tasks.indexOf(oldText)
+function removeTask(taskItem, taskText) {
+    taskContainer.removeChild(taskItem);
+    deleteTaskFromLocalStorage(taskText);
+}
+
+function saveTaskToLocalStorage(taskText) {
+    const tasks = getTasksFromLocalStorage();
+    tasks.push(taskText);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadStoredTasks() {
+    const tasks = getTasksFromLocalStorage();
+    tasks.forEach(addTaskToDom);
+}
+
+function updateTaskInLocalStorage(oldText, newText) {
+    const tasks = getTasksFromLocalStorage();
+    const taskIndex = tasks.indexOf(oldText);
     if (taskIndex !== -1) {
-        tasks[taskIndex] = newText
-        localStorage.setItem("tasks", JSON.stringify(tasks))
+        tasks[taskIndex] = newText;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
     }
+}
+
+function deleteTaskFromLocalStorage(taskText) {
+    let tasks = getTasksFromLocalStorage();
+    tasks = tasks.filter(task => task !== taskText);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function getTasksFromLocalStorage() {
+    return JSON.parse(localStorage.getItem("tasks")) || [];
 }
